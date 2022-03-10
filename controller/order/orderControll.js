@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const mongodb = require("../../mongodb");
 
 const client = mongodb();
@@ -39,11 +40,36 @@ async function getOrderByEmail(req, res, next) {
     } catch (err) {
         next(err)
     }
+};
+
+async function getFilteredOrder(req, res, next) {
+    try {
+        const result = await orders.find({ status: req.params.text }).toArray();
+        res.send(result);
+
+    } catch (err) {
+        next(err)
+    }
+}
+
+
+async function updateOrder(req, res, next) {
+    try {
+        const filter = { _id: ObjectId(req.params.id) };
+        const docs = { $set: req.body };
+        const result = await orders.updateOne(filter, docs);
+        res.send(result);
+
+    } catch (err) {
+        next(err)
+    }
 }
 
 
 module.exports = {
     postOrder,
     getOrder,
-    getOrderByEmail
+    getOrderByEmail,
+    updateOrder,
+    getFilteredOrder
 }

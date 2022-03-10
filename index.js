@@ -17,7 +17,6 @@ app.use("/users", userRouter);
 
 app.use("/orders", orderRute);
 
-
 app.get("/", (req, res) => {
     res.send("server is runing");
 });

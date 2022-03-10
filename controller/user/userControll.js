@@ -63,6 +63,18 @@ async function getUserByEmail(req, res, next) {
     } catch (err) {
         next(err)
     }
+};
+
+async function updateUser(req, res, next) {
+    try {
+        const filter = { email: req.params.email };
+        const doc = { $set: req.body };
+        const result = await users.updateOne(filter, doc);
+        res.send(result);
+
+    } catch (err) {
+        next(err)
+    }
 }
 
 
@@ -72,7 +84,8 @@ module.exports = {
     isExistUser,
     sendUser,
     getUserByEmail,
-    getUser
+    getUser,
+    updateUser
 };
 
 

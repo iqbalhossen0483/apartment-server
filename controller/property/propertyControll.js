@@ -53,6 +53,18 @@ async function getPropertyById(req, res, next) {
     }
 };
 
+
+async function searchProperty(req, res, next) {
+    try {
+        const text = req.params.text;
+        const result = await property.find({ $text: { $search: text } }).toArray();
+        res.send(result);
+
+    } catch (err) {
+        next(err)
+    }
+}
+
 async function deleteProperty(req, res, next) {
     try {
         deleteImage(req.body.imgId);
@@ -61,6 +73,24 @@ async function deleteProperty(req, res, next) {
 
     } catch (err) {
         next(err);
+    }
+};
+
+
+async function updateProperty(req, res, next) {
+    try {
+        if (req.file) {
+            deleteImage(req.body.imgId);
+        }
+        delete req.body.img;
+        delete req.body.imgId;
+        const filter = { _id: ObjectId(req.params.id) };
+        const docs = { $set: req.body };
+        const result = await property.updateOne(filter, docs);
+        res.send(result);
+
+    } catch (err) {
+        next(err)
     }
 }
 
@@ -71,5 +101,7 @@ module.exports = {
     getForHome,
     getProperty,
     getPropertyById,
-    deleteProperty
+    deleteProperty,
+    searchProperty,
+    updateProperty
 }
